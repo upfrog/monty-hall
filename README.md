@@ -1,0 +1,1 @@
+This is a toy simulation for playing around with the Monty Hall problem. It lets you adjust the number of doors, prizes, and and the number of doors to be revealed, and see how different behavior effects your chance of winning.
