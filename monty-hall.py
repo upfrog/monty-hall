@@ -1,36 +1,55 @@
 import random
+import argparse
 
 def main():
-    num_iterations = 50000
-    goat = "goat"
-    prize = "car"
-    num_doors = 4
-    num_prizes = 2
-    num_revealed = 1
-    
-    #validate data - this feels very clunk, even putting aside the un-written error msgs
-    if num_prizes + num_revealed >= num_doors:
-        raise ValueError("Too many prizes and revealed doors - the player should never be able to choose a door which has already been opened.")
-    
-    if num_doors < 0 or num_prizes < 0:
-        raise ValueError("The number of doors and prizes must both be non-negative")
-    
-    if goat == prize:
-        raise ValueError("Different symbols must be used for the preferred and not-preferred prizes")
-        
-    
-    if num_iterations < 1:
-        raise ValueError("Need at least one iteration")
+    parser = argparse.ArgumentParser(
+        prog='MontyHallSimulator',
+        description='Simulates the Monty Hall problem with user-selected parameters')
 
-    for switch in [True, False]:
+    parser.add_argument('--num-doors', type=int, default=3)
+    parser.add_argument('--num-revealed', type=int, default=1)
+    parser.add_argument('--num-iterations', type=int, default=1000)
+    parser.add_argument('--num-prizes', type=int, default=1)
+    parser.add_argument('--prize-token', type=str, default="C")
+    parser.add_argument('--goat-token', type=str, default="G")
+    parser.add_argument('--seed', type=int, help="Seed for RNG (optional, provides reporducibility)")
+    parser.add_argument('--strategy', choices=["both", "switch", "stick"], default="both")
+
+    args = parser.parse_args()
+
+    if args.seed is not None:
+        random.seed(args.seed)
+
+    validate_args(args)
+    run_simulation(args)    
+
+
+def run_simulation(args):
+    strategy = [True, False] if args.strategy == "both" else [args.strategy=="switch"]
+    for switch in strategy:
         win_count = 0
-        for iteration in range(num_iterations):        
-            prob = construct_problem(num_doors, goat, prize, num_prizes)
-            if play_problem(prob, switch, prize, num_revealed):
+        for iteration in range(args.num_iterations):        
+            prob = construct_problem(args.num_doors, args.goat_token, 
+                                     args.prize_token, args.num_prizes)
+            if play_problem(prob, switch, args.prize_token, args.num_revealed):
                 win_count += 1
 
-        report_results(win_count, num_iterations, switch)
+        report_results(win_count, args.num_iterations, switch)
+
+
+def validate_args(args):
+    if args.num_prizes + args.num_revealed >= args.num_doors:
+        raise ValueError("Too many prizes and revealed doors - the player should never be able to choose a door which has already been opened.")
+    
+    if args.num_doors < 0 or args.num_prizes < 0:
+        raise ValueError("The number of doors and prizes must both be non-negative")
+    
+    if args.goat_token == args.prize_token:
+        raise ValueError("Different symbols must be used for the preferred and not-preferred prizes")
         
+    if args.num_iterations < 1:
+        raise ValueError("Need at least one iteration")
+
     
 def play_problem(problem: list, switch_choice: bool, prize: str, to_reveal=1):
     '''
@@ -41,11 +60,8 @@ def play_problem(problem: list, switch_choice: bool, prize: str, to_reveal=1):
     first_choice = random.choice(problem_indices)
     revealed = set()
 
-
     valid_reveals = [i for i in problem_indices if i != first_choice and problem[i] != prize]
     revealed = set(random.sample(valid_reveals, to_reveal))
-
-    
 
     second_choice = first_choice
     if switch_choice:
@@ -71,10 +87,11 @@ def construct_problem(num_doors=3, goat="G", prize="C", num_prizes=1) -> list:
     return doors
     
 
-def report_results(win_count: int, num_iterations: int, choice_switched: bool) -> None:
+def report_results(win_count: int, num_iterations: int, switch:bool) -> None:
     win_percentage = 100*(win_count/num_iterations)
+    strategy = "switch" if switch else "stick"
     print("================")
-    print(f"Switch is: {choice_switched}.")
+    print(f"Strategy is: {strategy}.")
     #fstring breaks compatibility with python older than 3.6 (I think)
     print(f"won {win_count}/{num_iterations} games, or {win_percentage:.4f}%")
     print("================")
