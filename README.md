@@ -1,14 +1,12 @@
-This is a toy simulation for playing around with the Monty Hall problem. 
-
-The Monty Hall probelm is a famous problem in statistics. The problem is as follows:
+This is a toy simulation for playing around with the Monty Hall problem - a famous problem in statistics. The problem is as follows:
 
 >_You are a contestant on a gameshow. In front of you on the stage, there are three doors. The gameshow host informs you that behind one door, there is a car. The other two doors conceal goats. You get to choose a door, and you get to take home whatever prize happens to be behind it._
 
->_You are permitted to choose a door. After you have chosen a door, but before it is opened, the host opens a second door, different from the one you chose, revealing a goat. The host then gives you the opportunity to see what behdind the door you chose, or to switch your choice, and instead open the door that neither you nor the host chose._
+>_You are permitted to choose a door. After you have chosen a door, but before it is opened, the host opens a second door, different from the one you chose, revealing a goat. The host then gives you the opportunity to see what behind the door you chose, or to switch your choice, and instead open the door that neither you nor the host chose._
 
 As it turns out, you have a much better chance of winning the car if you switch your choice to the third door. How much better? Well, let's run this simulation and find out!
 
-Once cloned, the program should run on any version of python above 3.6. To run it in the default configuration, open your terminal of choice, navigate to the repositor, and run:
+Once cloned, the program should run on any version of python above 3.6. To run it in the default configuration, open your terminal of choice, navigate to the repository, and run:
 
 ```> python3 monty-hall.py```
 
@@ -41,4 +39,4 @@ The result of this problem is highly counterintuitive to most people. To help il
 
 Let's use the optional parameters exposed by this program to find out!
 
-
+(to be completed later)
