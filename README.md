@@ -1,6 +1,6 @@
 This is a toy simulation for playing around with the Monty Hall problem. 
 
-The Monty Hall Probelm is a famous problem in statistics. The problem is as follows:
+The Monty Hall probelm is a famous problem in statistics. The problem is as follows:
 
 >_You are a contestant on a gameshow. In front of you on the stage, there are three doors. The gameshow host informs you that behind one door, there is a car. The other two doors conceal goats. You get to choose a door, and you get to take home whatever prize happens to be behind it._
 
