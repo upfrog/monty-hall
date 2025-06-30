@@ -60,16 +60,44 @@ def play_problem(problem: list, switch_choice: bool, prize: str, to_reveal=1):
     first_choice = random.choice(problem_indices)
     revealed = set()
 
-    valid_reveals = [i for i in problem_indices if i != first_choice and problem[i] != prize]
-    revealed = set(random.sample(valid_reveals, to_reveal))
+    #valid_reveals = [i for i in problem_indices if i != first_choice and problem[i] != prize]
+    #valid_reveals = gen_valid_reveals(problem_indices, first_choice, problem, prize)
+    #revealed = set(random.sample(valid_reveals, to_reveal))
+    revealed = gen_reveals(problem_indices, first_choice, problem, prize, to_reveal)
 
     second_choice = first_choice
     if switch_choice:
-        second_choice = random.choice(
+        '''second_choice = random.choice(
             [i for i in problem_indices if i != first_choice and i not in revealed]
-        )
+        )'''
+        second_choice = gen_second_choice_options(problem_indices, first_choice, revealed)
 
     return problem[second_choice] == prize
+
+#For benchmarking:
+def gen_valid_reveals(problem_indices, first_choice, problem, prize):
+    return [i for i in problem_indices if i != first_choice and problem[i] != prize]
+
+def gen_reveals(problem_indices, first_choice, problem, prize, to_reveal):
+
+    valid_reveals = gen_valid_reveals(problem_indices, first_choice, problem, prize)
+
+    num_valid_reveals = len(valid_reveals)
+    if to_reveal > num_valid_reveals//2:
+        #generate the elements we DONT reveal
+        
+        exclude_n = len(valid_reveals) - to_reveal
+        excluded = set(random.sample(valid_reveals, exclude_n))
+        valid_reveals = set(valid_reveals)
+        return valid_reveals - excluded
+    else:
+        #valid_reveals = gen_valid_reveals(problem_indices, first_choice, problem, prize)
+        return set(random.sample(valid_reveals, to_reveal))
+
+def gen_second_choice_options(problem_indices, first_choice, revealed):
+    return random.choice(
+            [i for i in problem_indices if i != first_choice and i not in revealed]
+        )
 
 
 def construct_problem(num_doors=3, goat="G", prize="C", num_prizes=1) -> list:
@@ -90,11 +118,11 @@ def construct_problem(num_doors=3, goat="G", prize="C", num_prizes=1) -> list:
 def report_results(win_count: int, num_iterations: int, switch:bool) -> None:
     win_percentage = 100*(win_count/num_iterations)
     strategy = "switch" if switch else "stick"
-    print("================")
+    print("====================")
     print(f"Strategy is: {strategy}.")
     #fstring breaks compatibility with python older than 3.6 (I think)
     print(f"won {win_count}/{num_iterations} games, or {win_percentage:.4f}%")
-    print("================")
+    print("====================")
     
 
 if __name__ == "__main__":
